@@ -55,66 +55,44 @@ public class ResourceController {
         logger.info("Resource saved successfully");
 
         // Redirect to list page with pre-populated parameters
-        return new ModelAndView("redirect:/view?firstname=" + firstName + "&lastname=" + lastName);
+        return new ModelAndView("redirect:/view?firstname=" + firstName + "&lastname=" + lastName + "&email=" + email);
     }
 
     @PostMapping("/add-skill")
-    public ModelAndView addSkill(@RequestParam("firstname") String firstName,
-                                 @RequestParam("lastname") String lastName,
+    public ModelAndView addSkill(@RequestParam("email") String email,
                                  @RequestParam("skill") String skill) {
 
-        logger.info("Adding skill: {} to resource with firstname: {} and lastname: {}", skill, firstName, lastName);
+        logger.info("Adding skill: {} to resource with email: {}", skill, email);
 
-        // Find the resource by firstname and lastname
-        Optional<Resource> resourceOptional = resourceRepository.findByFirstNameAndLastName(firstName, lastName);
+        // Find the resource by email
+        Optional<Resource> resourceOptional = resourceRepository.findByEmail(email);
         if (resourceOptional.isEmpty()) {
-            logger.error("Resource with the provided firstname and lastname does not exist.");
-            throw new IllegalArgumentException("Resource with the provided firstname and lastname does not exist.");
+            logger.error("Resource with the provided email does not exist.");
+            throw new IllegalArgumentException("Resource with the provided email does not exist.");
         }
 
         // Add the skill to the resource
         Resource resource = resourceOptional.get();
-        resource.addSkill(skill);
+        resource.addSkill(skill); // This method should update the skills field of the Resource entity
 
         resourceRepository.save(resource);
         logger.info("Skill added successfully");
 
         // Redirect to view page with pre-populated parameters
-        return new ModelAndView("redirect:/view?firstname=" + firstName + "&lastname=" + lastName);
+        return new ModelAndView("redirect:/view?email=" + email);
     }
-
-    @GetMapping("/list")
-    public ModelAndView showList() {
-        logger.info("Showing list page");
-        ModelAndView modelAndView = new ModelAndView("list");
-        modelAndView.addObject("resources", resourceRepository.findAll());
-        return modelAndView;
-    }
-
-    @GetMapping("/view")
-    public ModelAndView showView(@RequestParam("firstname") String firstName,
-                                 @RequestParam("lastname") String lastName) {
-        logger.info("Showing view page");
-        ModelAndView modelAndView = new ModelAndView("view");
-        modelAndView.addObject("firstname", firstName);
-        modelAndView.addObject("lastname", lastName);
-        return modelAndView;
-    }
-
-
 
     @PostMapping("/remove-skill")
-    public ModelAndView removeSkill(@RequestParam("firstname") String firstName,
-                                    @RequestParam("lastname") String lastName,
+    public ModelAndView removeSkill(@RequestParam("email") String email,
                                     @RequestParam("skill") String skill) {
 
-        logger.info("Removing skill: {} from resource with firstname: {} and lastname: {}", skill, firstName, lastName);
+        logger.info("Removing skill: {} from resource with email: {}", skill, email);
 
-        // Find the resource by firstname and lastname
-        Optional<Resource> resourceOptional = resourceRepository.findByFirstNameAndLastName(firstName, lastName);
+        // Find the resource by email
+        Optional<Resource> resourceOptional = resourceRepository.findByEmail(email);
         if (resourceOptional.isEmpty()) {
-            logger.error("Resource with the provided firstname and lastname does not exist.");
-            throw new IllegalArgumentException("Resource with the provided firstname and lastname does not exist.");
+            logger.error("Resource with the provided email does not exist.");
+            throw new IllegalArgumentException("Resource with the provided email does not exist.");
         }
 
         // Remove the skill from the resource
@@ -125,7 +103,42 @@ public class ResourceController {
         logger.info("Skill removed successfully");
 
         // Redirect to view page with pre-populated parameters
-        return new ModelAndView("redirect:/view?firstname=" + firstName + "&lastname=" + lastName);
+        return new ModelAndView("redirect:/view?email=" + email);
+    }
+
+
+
+
+
+    @GetMapping("/list")
+    public ModelAndView showList() {
+        logger.info("Showing list page");
+        ModelAndView modelAndView = new ModelAndView("list");
+        modelAndView.addObject("resources", resourceRepository.findAll());
+        return modelAndView;
+    }
+
+
+    @GetMapping("/view")
+    public ModelAndView showView(@RequestParam("email") String email) {
+        logger.info("Showing view page for resource with email: {}", email);
+
+        // Find the resource by email
+        Optional<Resource> resourceOptional = resourceRepository.findByEmail(email);
+        if (resourceOptional.isEmpty()) {
+            logger.error("Resource with the provided email does not exist.");
+            throw new IllegalArgumentException("Resource with the provided email does not exist.");
+        }
+
+        Resource resource = resourceOptional.get();
+
+        ModelAndView modelAndView = new ModelAndView("view");
+        modelAndView.addObject("firstname", resource.getFirstName());
+        modelAndView.addObject("lastname", resource.getLastName());
+        modelAndView.addObject("email", resource.getEmail());
+        modelAndView.addObject("skills", resource.getSkills());
+
+        return modelAndView;
     }
 
     // Validation method to check if a name contains only letters and spaces

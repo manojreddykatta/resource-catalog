@@ -1,8 +1,8 @@
 package com.resource.catalog.model;
 
-import jakarta.persistence.*;
 import java.util.Set;
-
+import jakarta.persistence.*;
+import java.util.HashSet;
 @Entity
 @Table(name = "resources")
 public class Resource {
@@ -67,10 +67,15 @@ public class Resource {
     }
 
     public void addSkill(String skill) {
-
+        if (this.skills == null) {
+            this.skills = new HashSet<>();
+        }
+        this.skills.add(skill);
     }
 
     public void removeSkill(String skill) {
-
+        if (this.skills != null) {
+            this.skills.remove(skill);
+        }
     }
 }

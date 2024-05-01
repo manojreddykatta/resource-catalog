@@ -22,6 +22,10 @@
             <input type="text" class="form-control" id="lastname" name="lastname" th:value="${param.lastname}" readonly>
         </div>
         <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            <input type="text" class="form-control" id="email" name="email" th:value="${param.email}" readonly>
+        </div>
+        <div class="mb-3">
             <label for="skill" class="form-label">Add Skill</label>
             <select class="form-select" id="skill" name="skill">
                 <option selected>Choose a skill from the list...</option>
@@ -40,11 +44,12 @@
     <h2 class="mt-5">Skills</h2>
     <ul class="list-group">
         <li class="list-group-item" th:each="skill : ${skills}">
-            <span th:text="${skill}"></span>
             <form action="/remove-skill" method="post" style="display: inline;">
-                <input type="text" name="skill" th:value="${skill}">
+                <input type="hidden" name="email" th:value="${param.email}">
+                <input type="hidden" name="skill" th:value="${skill}">
                 <button type="submit" class="btn btn-danger btn-sm">Remove</button>
             </form>
+            <span th:text="${skill}"></span>
         </li>
     </ul>
 </div>
