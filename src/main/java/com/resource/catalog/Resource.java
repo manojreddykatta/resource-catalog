@@ -65,4 +65,12 @@ public class Resource {
     public void setSkills(Set<String> skills) {
         this.skills = skills;
     }
+
+    public void addSkill(String skill) {
+
+    }
+
+    public void removeSkill(String skill) {
+
+    }
 }

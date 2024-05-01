@@ -56,8 +56,33 @@ public class ResourceController {
 
         // Redirect to list page with pre-populated parameters
         return new ModelAndView("redirect:/view?firstname=" + firstName + "&lastname=" + lastName);
-
     }
+
+    @PostMapping("/add-skill")
+    public ModelAndView addSkill(@RequestParam("firstname") String firstName,
+                                 @RequestParam("lastname") String lastName,
+                                 @RequestParam("skill") String skill) {
+
+        logger.info("Adding skill: {} to resource with firstname: {} and lastname: {}", skill, firstName, lastName);
+
+        // Find the resource by firstname and lastname
+        Optional<Resource> resourceOptional = resourceRepository.findByFirstNameAndLastName(firstName, lastName);
+        if (resourceOptional.isEmpty()) {
+            logger.error("Resource with the provided firstname and lastname does not exist.");
+            throw new IllegalArgumentException("Resource with the provided firstname and lastname does not exist.");
+        }
+
+        // Add the skill to the resource
+        Resource resource = resourceOptional.get();
+        resource.addSkill(skill);
+
+        resourceRepository.save(resource);
+        logger.info("Skill added successfully");
+
+        // Redirect to view page with pre-populated parameters
+        return new ModelAndView("redirect:/view?firstname=" + firstName + "&lastname=" + lastName);
+    }
+
     @GetMapping("/list")
     public ModelAndView showList() {
         logger.info("Showing list page");
@@ -76,6 +101,32 @@ public class ResourceController {
         return modelAndView;
     }
 
+
+
+    @PostMapping("/remove-skill")
+    public ModelAndView removeSkill(@RequestParam("firstname") String firstName,
+                                    @RequestParam("lastname") String lastName,
+                                    @RequestParam("skill") String skill) {
+
+        logger.info("Removing skill: {} from resource with firstname: {} and lastname: {}", skill, firstName, lastName);
+
+        // Find the resource by firstname and lastname
+        Optional<Resource> resourceOptional = resourceRepository.findByFirstNameAndLastName(firstName, lastName);
+        if (resourceOptional.isEmpty()) {
+            logger.error("Resource with the provided firstname and lastname does not exist.");
+            throw new IllegalArgumentException("Resource with the provided firstname and lastname does not exist.");
+        }
+
+        // Remove the skill from the resource
+        Resource resource = resourceOptional.get();
+        resource.removeSkill(skill);
+
+        resourceRepository.save(resource);
+        logger.info("Skill removed successfully");
+
+        // Redirect to view page with pre-populated parameters
+        return new ModelAndView("redirect:/view?firstname=" + firstName + "&lastname=" + lastName);
+    }
 
     // Validation method to check if a name contains only letters and spaces
     private boolean isValidName(String name) {

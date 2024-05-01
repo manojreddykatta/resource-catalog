@@ -9,6 +9,8 @@
 <body>
 <h1 class="text-center">List of Resources</h1><br>
 
+<a href="/" target="_blank" style=" float: right;" class="btn btn-primary">Home</a>
+
 <div class="container">
     <table class="table table-striped">
         <thead>
@@ -23,6 +25,7 @@
             <td th:text="${resource.firstName}"></td>
             <td th:text="${resource.lastName}"></td>
             <td th:text="${resource.email}"></td>
+            <td th:text="${resource.skills}"></td>
         </tr>
         </tbody>
     </table>

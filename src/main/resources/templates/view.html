@@ -9,6 +9,8 @@
 <body>
 <h1 class="text-center">View Resource</h1><br>
 
+<a href="list" target="_blank" class="btn btn-primary">List Resources</a>
+
 <div class="container">
     <form action="/add-skill" method="post">
         <div class="mb-3">
@@ -20,9 +22,9 @@
             <input type="text" class="form-control" id="lastname" name="lastname" th:value="${param.lastname}" readonly>
         </div>
         <div class="mb-3">
-            <label for="skill" class="form-label">Skill</label>
-            <select class="form-select" id="skill" name="skill" multiple>
-                <option selected>Choose the skills from list...</option>
+            <label for="skill" class="form-label">Add Skill</label>
+            <select class="form-select" id="skill" name="skill">
+                <option selected>Choose a skill from the list...</option>
                 <option value="Java">Java</option>
                 <option value="Python">Python</option>
                 <option value="JavaScript">JavaScript</option>
@@ -34,6 +36,17 @@
         </div>
         <button type="submit" class="btn btn-primary">Add Skill</button>
     </form>
+
+    <h2 class="mt-5">Skills</h2>
+    <ul class="list-group">
+        <li class="list-group-item" th:each="skill : ${skills}">
+            <span th:text="${skill}"></span>
+            <form action="/remove-skill" method="post" style="display: inline;">
+                <input type="text" name="skill" th:value="${skill}">
+                <button type="submit" class="btn btn-danger btn-sm">Remove</button>
+            </form>
+        </li>
+    </ul>
 </div>
 </body>
 </html>
